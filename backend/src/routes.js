@@ -8,17 +8,19 @@ const SessionController = require('./controllers/SessionController');
 
 const routes = express.Router();
 
+//Validation for logins
 routes.post('/session', celebrate({
     [Segments.BODY]: Joi.object({
         id: Joi.string().required(),
     }).unknown(),
 }), SessionController.create);
 
+//Validation for creating a new ONGs
 routes.post('/ongs', celebrate({
     [Segments.BODY]: Joi.object().keys({
         name: Joi.string().required(),
         email: Joi.string().required().email(),
-        whatsapp: Joi.number().required().min(10).max(11),
+        whatsapp: Joi.string().required().min(10).max(11),
         city: Joi.string().required(),
         uf: Joi.string().required().length(2),
     })
@@ -26,12 +28,14 @@ routes.post('/ongs', celebrate({
 
 routes.get('/ongs', OngsController.index);
 
+//Validation to get ONG incidents
 routes.get('/profile', celebrate({
     [Segments.HEADERS]: Joi.object({
         authorization: Joi.string().required(),
     }).unknown(),
 }), ProfileController.index);
 
+//Validation for a new incidents
 routes.post('/incidents', celebrate({
     [Segments.HEADERS]: Joi.object({
         authorization: Joi.string().required(),
@@ -43,12 +47,14 @@ routes.post('/incidents', celebrate({
     })
 }), IncidentController.create);
 
+//Validation to get incidents
 routes.get('/incidents', celebrate({
     [Segments.QUERY]: Joi.object().keys({
        page: Joi.number(), 
     })
 }), IncidentController.index);
 
+//Validation to delete incidents
 routes.delete('/incidents/:id', celebrate({
     [Segments.PARAMS]: Joi.object().keys({
         id: Joi.number().required(),
